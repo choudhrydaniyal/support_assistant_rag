@@ -4,23 +4,23 @@
 
 ```mermaid
 flowchart TD
-    U[User message] --> HR{Explicit human\nrequest?}
-    HR -- yes --> ESC1[Escalate: EXPLICIT_REQUEST]
-    HR -- no --> RET[Retriever: TF-IDF cosine\nsearch over chunk corpus]
-    RET --> SCORE{Top similarity\n>= threshold?}
-    SCORE -- no --> ESC2[Escalate: LOW_RETRIEVAL_CONFIDENCE\n(LLM is not called)]
-    SCORE -- yes --> CONFLICT{Conflicting facts\nacross top chunks?}
-    CONFLICT -- yes --> FLAG1[Flag: CONFLICTING_SOURCES]
+    U["User message"] --> HR{"Explicit human request?"}
+    HR -- yes --> ESC1["Escalate: EXPLICIT_REQUEST"]
+    HR -- no --> RET["Retriever: TF-IDF cosine search over chunk corpus"]
+    RET --> SCORE{"Top similarity above threshold?"}
+    SCORE -- no --> ESC2["Escalate: LOW_RETRIEVAL_CONFIDENCE - LLM is not called"]
+    SCORE -- yes --> CONFLICT{"Conflicting facts across top chunks?"}
+    CONFLICT -- yes --> FLAG1["Flag: CONFLICTING_SOURCES"]
     CONFLICT -- no --> GEN
-    FLAG1 --> GEN[LLM generation\nGemini, context + system prompt\n+ conversation history]
-    GEN --> UNSURE{Answer contains\nuncertainty phrase?}
-    UNSURE -- yes --> FLAG2[Flag: MODEL_UNCERTAIN]
+    FLAG1 --> GEN["LLM generation - Gemini, context plus system prompt plus conversation history"]
+    GEN --> UNSURE{"Answer contains uncertainty phrase?"}
+    UNSURE -- yes --> FLAG2["Flag: MODEL_UNCERTAIN"]
     UNSURE -- no --> OUT
-    FLAG2 --> OUT[Return answer + citations\n+ escalation flags]
-    ESC1 --> ROUTE[Route to human agent]
+    FLAG2 --> OUT["Return answer with citations and escalation flags"]
+    ESC1 --> ROUTE["Route to human agent"]
     ESC2 --> ROUTE
-    OUT -- escalate=true --> ROUTE
-    OUT -- escalate=false --> DONE[Show answer to user]
+    OUT -- escalate true --> ROUTE
+    OUT -- escalate false --> DONE["Show answer to user"]
 ```
 
 ## Components
